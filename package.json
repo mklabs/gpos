@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "name": "gh-pages-search",
+  "description": "Github Pages search engine powered by Github code search API",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mklabs/gh-pages-search.git"
+  },
+  "keywords": ["github", "search", "api", "opensearch"],
+  "bugs": {
+    "url": "https://github.com/mklabs/gh-pages-search/issues"
+  },
+  "homepage": "https://github.com/mklabs/gh-pages-search#readme",
+  "license": "ISC"
+}
