@@ -1,13 +1,13 @@
-const qs  = require('qs');
-const bel = require('bel');
-const yo  = require('yo-yo');
+const yo       = require('yo-yo');
+const qs       = require('qs');
+const bel      = require('bel');
+const path     = require('path');
 const delegate = require('delegate');
 
-const BASE_URL = 'http://mkla.bz';
+const BASE_URL = 'http://mkla.bz/';
 
 // Search def
 class Search {
-
   get endpoint () {
     return 'https://api.github.com/search/code?q=';
   }
@@ -60,31 +60,37 @@ let opns = (template, options = {}) => {
   return new Search(template, options);
 };
 
-// Init
+// Templates
 let template = ({ items }, query) => {
   return bel`<section class="js-result">
     ${!items.length ? noResult(query) : items.map((item) => {
-      let name = item.name.slice(0, 12) + '...'
+      let name = path.basename(item.name)
+      name = name.replace(/\d{4}-\d\d?-\d\d?-/, '');
+      name = name.replace(/\.md/, '')
+
       let parts = item.name.split('-')
       let href = BASE_URL + parts.slice(0, 3).join('/') + '/' + parts.slice(3).join('-')
+      href = href.replace(/\.md/, '.html')
 
       return bel`<div class="opns-item">
         <header class="header">
-          <h3><a href="/${item.name}">${href}</a></h3>
-          <a class="repo" href="${item.html_url}">${item.path}</a>
+          <h3><a href="${href}">${name}</a></h3>
+          <a class="repo" href="${item.url}">${item.path}</a>
         </header>
-        <p><a href="${item.name}">${item.name} (${item.path})</a></p>
+        <p><a href="${href}">${item.name} (${item.path})</a></p>
       </div>`;
     })}
   </section>`;
 };
 
+// No result template helper
 let noResult = (query) => {
   return bel`<div class="opns-item">
     <p>No results for ${query}</p>
   </div>`;
 };
 
+// Init the view
 let view = opns(template, {
   repo: 'mklabs/mklabs.github.com',
   language: 'markdown'
@@ -101,7 +107,6 @@ delegate(document.body, '.js-search', 'input', (e) => {
 var initialQuery = qs.parse(location.search.replace(/^\?/, '')).q;
 if (!initialQuery) {
   initialQuery = 'ES6';
-  input.value = initialQuery;
 }
 
 let search = (value) => {
@@ -109,8 +114,8 @@ let search = (value) => {
   return view.search(value)
     .then((el) => {
       yo.update(container, el)
+      input.focus();
     });
 };
 
 search(initialQuery);
-input.focus();

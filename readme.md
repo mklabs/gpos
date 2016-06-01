@@ -22,8 +22,10 @@ client side lib that talks to API `https://api.github.com/search/code?q=` endpoi
 ## Usage
 
 ```js
+// Require the lib
 let opns = require('gh-opns');
 
+// Build a template function, here using
 let template = ({ title, content }) => {
   return `<section>
     <div class="opns-item">
