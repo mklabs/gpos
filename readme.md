@@ -71,12 +71,12 @@ let search = (value) => {
   });
 };
 
+// Trigger a search on input change
 delegate(document.body, '.js-search', 'input', (e) => {
   search(input.value);
 }, false);
 
+// Get "q" querystring parameter and start the search from there
 let query = qs.parse(location.search.replace(/^\?/, '')).q || '';
 window.addEventListener('load', () => search(query));
-```:
-
-...
+```
