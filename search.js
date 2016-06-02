@@ -54,7 +54,7 @@ class Search {
 }
 
 // Search entry point
-let opns = (template, options = {}) => {
+let gpos = (template, options = {}) => {
   if (!template) throw new Error('Missing template');
   if (typeof template !== 'function') throw new Error('Template must be a function');
   return new Search(template, options);
@@ -72,7 +72,7 @@ let template = ({ items }, query) => {
       let href = BASE_URL + parts.slice(0, 3).join('/') + '/' + parts.slice(3).join('-')
       href = href.replace(/\.md/, '.html')
 
-      return bel`<div class="opns-item">
+      return bel`<div class="gpos-item">
         <header class="header">
           <h3><a href="${href}">${name}</a></h3>
           <a class="repo" href="${item.url}">${item.path}</a>
@@ -85,13 +85,13 @@ let template = ({ items }, query) => {
 
 // No result template helper
 let noResult = (query) => {
-  return bel`<div class="opns-item">
+  return bel`<div class="gpos-item">
     <p>No results for ${query}</p>
   </div>`;
 };
 
 // Init the view
-let view = opns(template, {
+let view = gpos(template, {
   repo: 'mklabs/mklabs.github.com',
   language: 'markdown'
 });
@@ -110,7 +110,6 @@ if (!initialQuery) {
 }
 
 let search = (value) => {
-  console.log('init query', value);
   return view.search(value).then((el) => {
     yo.update(container, el)
     input.focus();
