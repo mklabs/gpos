@@ -1,15 +1,29 @@
 
-all: serve
+all: build
 
 serve:
 	list .
 
-browserify:
-	browserify -e lib/search.js -o dist/gpos.js
+build: bro brolib minify stat
+bro:
+	browserify -e index.js -s Gpos > dist/bundle.js
+
+brolib:
+	browserify -e lib/index.js -s Gpos > dist/gpos.js
+
+minify: uglify uglifylib
+
+uglify:
+	uglifyjs dist/bundle.js -o dist/bundle.min.js
+
+uglifylib:
+	uglifyjs dist/gpos.js -o dist/gpos.min.js
+
+stat:
+	bash -c "ls -lah dist/ | grep '.js'"
 
 watchify:
-	watchify lib/search.js -p livereactload -o dist/gpos.js
-
+	watchify index.js -p livereactload -o dist/gpos.js
 
 ghpages:
 	git subtree push --prefix yov origin gh-pages

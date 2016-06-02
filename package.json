@@ -8,17 +8,25 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.5.0",
     "babelify": "^7.3.0",
+    "brfs": "^1.4.3",
     "browserify": "^13.0.1",
+    "browserify-css": "^0.9.1",
+    "inliner": "^1.9.2",
     "livereactload": "^2.2.3",
     "micro-list": "^0.4.1",
     "react": "^15.1.0",
     "react-proxy": "^1.1.8",
+    "uglify-js": "^2.6.2",
     "watchify": "^3.7.0"
   },
   "browserify": {
     "transform": [
-      "babelify"
+      "babelify",
+      "browserify-css"
     ]
+  },
+  "browserify-css": {
+    "autoInject": true
   },
   "version": "0.0.1",
   "name": "gh-pages-search",
@@ -38,5 +46,11 @@
     "url": "https://github.com/mklabs/gh-pages-search/issues"
   },
   "homepage": "https://github.com/mklabs/gh-pages-search#readme",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bel": "^4.3.1",
+    "delegate": "^3.0.1",
+    "qs": "^6.2.0",
+    "yo-yo": "^1.2.1"
+  }
 }
