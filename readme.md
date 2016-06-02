@@ -1,13 +1,14 @@
-# gh-opns - Github OpenSearch
+# gops - Github Pages Open Search
 
 > Search engine on Github Pages using Github [code search
 > API](https://github.com/blog/1564-code-search-api) and
 > [opensearch](http://www.opensearch.org/Home)
 
 Written for easy inclusion on any gh-pages repo / branch. This is just a little
-client side lib that talks to API `https://api.github.com/search/code?q=` endpoint.
+client side lib that talks to `https://api.github.com/search/code?q=` API endpoint.
 
-1. Uses `fetch` to query Github code search
+1. Uses `fetch()` to query Github code search
+   ([polyfill](https://github.com/mklabs/polyfill))
 2. Pass the result to a template String or Function
 3. Builds a new DOM element using bel
 4. Appends the created element to the DOM.
@@ -46,3 +47,7 @@ view.search('beep boop')
     document.body.appendChild(el);
   });
 ```
+
+---
+
+**WIP** You can see a (buggy) version up at http://mkla.bz/search/?q=es6
