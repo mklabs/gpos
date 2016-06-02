@@ -1,4 +1,4 @@
-# gops - Github Pages Open Search
+# gpos - Github Pages Open Search
 
 > Search engine on Github Pages using Github [code search
 > API](https://github.com/blog/1564-code-search-api) and
