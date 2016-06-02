@@ -11,18 +11,25 @@
     "brfs": "^1.4.3",
     "browserify": "^13.0.1",
     "browserify-css": "^0.9.1",
+    "hyperxify": "^2.0.1",
     "inliner": "^1.9.2",
     "livereactload": "^2.2.3",
     "micro-list": "^0.4.1",
+    "opn-cli": "^3.1.0",
     "react": "^15.1.0",
     "react-proxy": "^1.1.8",
     "uglify-js": "^2.6.2",
-    "watchify": "^3.7.0"
+    "watchd": "^0.1.1",
+    "watchify": "^3.7.0",
+    "yo-yoify": "^1.0.4",
+    "zuul": "^3.10.1"
   },
   "browserify": {
     "transform": [
       "babelify",
-      "browserify-css"
+      "browserify-css",
+      "hyperxify",
+      "brfs"
     ]
   },
   "browserify-css": {
