@@ -5,7 +5,7 @@ serve:
 	list .
 
 browserify:
-	browserify -e lib/search.js -p livereactload -o dist/gpos.js
+	browserify -e lib/search.js -o dist/gpos.js
 
 watchify:
 	watchify lib/search.js -p livereactload -o dist/gpos.js
