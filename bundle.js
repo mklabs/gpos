@@ -1,13 +1,23 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Gpos = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-var read = require('fs').readFileSync;
+
 var gpos = module.exports = require('./lib');
 gpos.styles = require('./lib/search.css');
-gpos.opensearch = read('./lib/opensearch.xml', 'utf8');
+gpos.opensearch = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<OpenSearchDescription\r\n  xmlns=\"http://a9.com/-/spec/opensearch/1.1/\"\r\n  xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\">\r\n  <ShortName>{{ homepage }}</ShortName>\r\n  <Description>Use GitHub code search API to search {{ homepage }}</Description>\r\n  <InputEncoding>UTF-8</InputEncoding>\r\n  <Image width=\"16\" height=\"16\" type=\"image/x-icon\">{{ homepage }}/favicon.ico</Image>\r\n  <Url\r\n    method=\"get\"\r\n    type=\"text/html\"\r\n    template=\"{{ homepage }}{{ baseURL }}?q={searchTerms}\"/>\r\n  <moz:SearchForm>{{ homepage }}{{ baseURL }}?q={searchTerms}</moz:SearchForm>\r\n</OpenSearchDescription>\r\n";
 
-},{"./lib":2,"./lib/search.css":3,"fs":7}],2:[function(require,module,exports){
+},{"./lib":2,"./lib/search.css":3}],2:[function(require,module,exports){
 'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _templateObject = _taggedTemplateLiteral(['<section class="js-result">\n    ', '\n  </section>'], ['<section class="js-result">\n    ', '\n  </section>']),
+    _templateObject2 = _taggedTemplateLiteral(['<div class="gpos-item">\n        <header class="header">\n          <h3><a href="', '">', '</a></h3>\n          <a class="repo" href="', '">', '</a>\n        </header>\n        <p><a href="', '">', ' (', ')</a></p>\n      </div>'], ['<div class="gpos-item">\n        <header class="header">\n          <h3><a href="', '">', '</a></h3>\n          <a class="repo" href="', '">', '</a>\n        </header>\n        <p><a href="', '">', ' (', ')</a></p>\n      </div>']),
+    _templateObject3 = _taggedTemplateLiteral(['<div class="gpos-item">\n    <p>No results for ', '</p>\n  </div>'], ['<div class="gpos-item">\n    <p>No results for ', '</p>\n  </div>']);
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // Sizes:
 //
@@ -17,142 +27,162 @@ gpos.opensearch = read('./lib/opensearch.xml', 'utf8');
 // - path - 3K
 // - delegate - 1K
 // - browserify - 12k
-// - gpos -
+// - gpos - 4k
 //
 // Total: 36k
 
 var yo = require('yo-yo');
 var qs = require('qs');
-var bel = require('bel');
+var bel = {};
 var path = require('path');
 var delegate = require('delegate');
 
-},{"bel":4,"delegate":9,"path":15,"qs":17,"yo-yo":21}],3:[function(require,module,exports){
+var BASE_URL = 'http://mkla.bz/';
+
+// Search def
+
+var Search = function () {
+  _createClass(Search, [{
+    key: 'endpoint',
+    get: function get() {
+      return 'https://api.github.com/search/code?q=';
+    }
+  }, {
+    key: 'defaults',
+    get: function get() {
+      return {
+        language: 'markdown',
+        repo: 'mklabs/mklabs.github.com'
+      };
+    }
+  }]);
+
+  function Search(template) {
+    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+    _classCallCheck(this, Search);
+
+    this.template = template;
+    this.options = options;
+  }
+
+  _createClass(Search, [{
+    key: 'search',
+    value: function search(query) {
+      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+      this.query = query;
+
+      var opts = Object.assign({}, this.options, options);
+      return this.fetch(this.url(query, opts)).then(this.dom.bind(this));
+    }
+  }, {
+    key: 'url',
+    value: function url(query, _ref) {
+      var language = _ref.language;
+      var repo = _ref.repo;
+
+      return this.endpoint + (query + '+in:file+language:' + language + '+repo:' + repo);
+    }
+  }, {
+    key: 'fetch',
+    value: function (_fetch) {
+      function fetch(_x) {
+        return _fetch.apply(this, arguments);
+      }
+
+      fetch.toString = function () {
+        return _fetch.toString();
+      };
+
+      return fetch;
+    }(function (url) {
+      return fetch(url).catch(function (e) {
+        return console.error('HTTP ERR', e);
+      }).then(function (res) {
+        return res.json();
+      }).then(this.fetchBody);
+    })
+  }, {
+    key: 'fetchBody',
+    value: function fetchBody(res) {
+      // todo
+      return res;
+    }
+  }, {
+    key: 'dom',
+    value: function dom(res) {
+      return this.template(res, this.query);
+    }
+  }]);
+
+  return Search;
+}();
+
+// Search entry point
+
+
+var gpos = function gpos(template) {
+  var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+  if (!template) throw new Error('Missing template');
+  if (typeof template !== 'function') throw new Error('Template must be a function');
+  return new Search(template, options);
+};
+
+// Templates
+var template = function template(_ref2, query) {
+  var items = _ref2.items;
+
+  return bel(_templateObject, !items.length ? noResult(query) : items.map(function (item) {
+    var name = path.basename(item.name);
+    name = name.replace(/\d{4}-\d\d?-\d\d?-/, '');
+    name = name.replace(/\.md/, '');
+
+    var parts = item.name.split('-');
+    var href = BASE_URL + parts.slice(0, 3).join('/') + '/' + parts.slice(3).join('-');
+    href = href.replace(/\.md/, '.html');
+
+    return bel(_templateObject2, href, name, item.url, item.path, href, item.name, item.path);
+  }));
+};
+
+// No result template helper
+var noResult = function noResult(query) {
+  return bel(_templateObject3, query);
+};
+
+// Init the view
+var view = gpos(template, {
+  repo: 'mklabs/mklabs.github.com',
+  language: 'markdown'
+});
+
+var input = document.querySelector('.js-search');
+var container = document.querySelector('.js-results');
+
+delegate(document.body, '.js-search', 'input', function (e) {
+  var value = input.value;
+  search(value);
+}, false);
+
+var initialQuery = qs.parse(location.search.replace(/^\?/, '')).q;
+if (!initialQuery) {
+  initialQuery = 'ES6';
+}
+
+var search = function search(value) {
+  return view.search(value).then(function (el) {
+    yo.update(container, el);
+    input.focus();
+  });
+};
+
+search(initialQuery);
+
+},{"delegate":6,"path":9,"qs":11,"yo-yo":15}],3:[function(require,module,exports){
 var css = ".site-header {\n  text-align: right;\n}\n.site-header a {\n  padding: 10px;\n  color: #000;\n  font-size: 11px;\n  text-decoration: none;\n}\n.search-input {\n  position: fixed;\n  bottom: -2px;\n  left: 0;\n  z-index: 10;\n  font-size: 40px;\n  padding: 15px 30px;\n  font-family: inherit;\n  font-weight: 100;\n  border: none;\n  outline: none;\n  border-bottom: 5px solid #eee;\n  background: rgba(255, 255, 255, .95);\n  width: 100%;\n}\n/* Search component styles */\n/* todo: csjs */\n/* Borrowed from https://github.com/component/component.github.io */\n/* http://component.github.io/ */\n.gpos-items {\n  margin: 40px 0;\n  width: 100%;\n  max-width: 1140px;\n  min-width: 300px;\n}\n.gpos-item {\n  position: relative;\n  overflow: hidden;\n  border-bottom: 1px solid #eee;\n  padding: 16px 14px;\n}\n.gpos-item .header {\n  float: left;\n  width: 20%;\n  margin-right: 20px;\n}\n.gpos-item h3 {\n  margin: 0;\n  line-height: 1.3;\n}\n.gpos-item h3 a {\n  color: inherit;\n  font-size: 14px;\n}\n.gpos-item .repo {\n  font-size: 12px;\n  color: #7f7f7f;\n}\n.gpos-item p {\n  overflow: hidden;\n  margin: 2px 0 0 0;\n  line-height: 1.3;\n  max-width: 40em;\n}\n.gpos-item p a {\n  text-decoration: none;\n  color: #000;\n}\n.gpos-item .info {\n  float: right;\n  max-width: 10em;\n  margin-left: 20px;\n  font-size: 12px;\n  color: #7f7f7f;\n  display: block;\n  line-height: 1.4;\n}\n.gpos-item .info td {\n  vertical-align: top;\n}\n.gpos-item .info td:first-child {\n  opacity: 0.6;\n  width: 20%;\n  padding-right: 10px;\n}\n"; (require("browserify-css").createStyle(css, { "href": "lib\\search.css"})); module.exports = css;
-},{"browserify-css":6}],4:[function(require,module,exports){
-var document = require('global/document')
-var hyperx = require('hyperx')
-
-var SVGNS = 'http://www.w3.org/2000/svg'
-var BOOL_PROPS = {
-  autofocus: 1,
-  checked: 1,
-  defaultchecked: 1,
-  disabled: 1,
-  formnovalidate: 1,
-  indeterminate: 1,
-  readonly: 1,
-  required: 1,
-  willvalidate: 1
-}
-var SVG_TAGS = [
-  'svg',
-  'altGlyph', 'altGlyphDef', 'altGlyphItem', 'animate', 'animateColor',
-  'animateMotion', 'animateTransform', 'circle', 'clipPath', 'color-profile',
-  'cursor', 'defs', 'desc', 'ellipse', 'feBlend', 'feColorMatrix',
-  'feComponentTransfer', 'feComposite', 'feConvolveMatrix', 'feDiffuseLighting',
-  'feDisplacementMap', 'feDistantLight', 'feFlood', 'feFuncA', 'feFuncB',
-  'feFuncG', 'feFuncR', 'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode',
-  'feMorphology', 'feOffset', 'fePointLight', 'feSpecularLighting',
-  'feSpotLight', 'feTile', 'feTurbulence', 'filter', 'font', 'font-face',
-  'font-face-format', 'font-face-name', 'font-face-src', 'font-face-uri',
-  'foreignObject', 'g', 'glyph', 'glyphRef', 'hkern', 'image', 'line',
-  'linearGradient', 'marker', 'mask', 'metadata', 'missing-glyph', 'mpath',
-  'path', 'pattern', 'polygon', 'polyline', 'radialGradient', 'rect',
-  'set', 'stop', 'switch', 'symbol', 'text', 'textPath', 'title', 'tref',
-  'tspan', 'use', 'view', 'vkern'
-]
-
-function belCreateElement (tag, props, children) {
-  var el
-
-  // If an svg tag, it needs a namespace
-  if (SVG_TAGS.indexOf(tag) !== -1) {
-    props.namespace = SVGNS
-  }
-
-  // If we are using a namespace
-  var ns = false
-  if (props.namespace) {
-    ns = props.namespace
-    delete props.namespace
-  }
-
-  // Create the element
-  if (ns) {
-    el = document.createElementNS(ns, tag)
-  } else {
-    el = document.createElement(tag)
-  }
-
-  // Create the properties
-  for (var p in props) {
-    if (props.hasOwnProperty(p)) {
-      var key = p.toLowerCase()
-      var val = props[p]
-      // Normalize className
-      if (key === 'classname') {
-        key = 'class'
-        p = 'class'
-      }
-      // If a property is boolean, set itself to the key
-      if (BOOL_PROPS[key]) {
-        if (val === 'true') val = key
-        else if (val === 'false') continue
-      }
-      // If a property prefers being set directly vs setAttribute
-      if (key.slice(0, 2) === 'on') {
-        el[p] = val
-      } else {
-        if (ns) {
-          el.setAttributeNS(null, p, val)
-        } else {
-          el.setAttribute(p, val)
-        }
-      }
-    }
-  }
-
-  function appendChild (childs) {
-    if (!Array.isArray(childs)) return
-    for (var i = 0; i < childs.length; i++) {
-      var node = childs[i]
-      if (Array.isArray(node)) {
-        appendChild(node)
-        continue
-      }
-
-      if (typeof node === 'number' ||
-        typeof node === 'boolean' ||
-        node instanceof Date ||
-        node instanceof RegExp) {
-        node = node.toString()
-      }
-
-      if (typeof node === 'string') {
-        if (el.lastChild && el.lastChild.nodeName === '#text') {
-          el.lastChild.nodeValue += node
-          continue
-        }
-        node = document.createTextNode(node)
-      }
-
-      if (node && node.nodeType) {
-        el.appendChild(node)
-      }
-    }
-  }
-  appendChild(children)
-
-  return el
-}
-
-module.exports = hyperx(belCreateElement)
-module.exports.createElement = belCreateElement
-
-},{"global/document":10,"hyperx":12}],5:[function(require,module,exports){
-
-},{}],6:[function(require,module,exports){
+},{"browserify-css":4}],4:[function(require,module,exports){
 'use strict';
 // For more information about browser field, check out the browser field at https://github.com/substack/browserify-handbook#browser-field.
 
@@ -204,9 +234,7 @@ module.exports = {
     }
 };
 
-},{}],7:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],8:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var matches = require('matches-selector')
 
 module.exports = function (element, selector, checkYoSelf) {
@@ -218,7 +246,7 @@ module.exports = function (element, selector, checkYoSelf) {
   }
 }
 
-},{"matches-selector":13}],9:[function(require,module,exports){
+},{"matches-selector":7}],6:[function(require,module,exports){
 var closest = require('closest');
 
 /**
@@ -264,312 +292,7 @@ function listener(element, selector, type, callback) {
 
 module.exports = delegate;
 
-},{"closest":8}],10:[function(require,module,exports){
-(function (global){
-var topLevel = typeof global !== 'undefined' ? global :
-    typeof window !== 'undefined' ? window : {}
-var minDoc = require('min-document');
-
-if (typeof document !== 'undefined') {
-    module.exports = document;
-} else {
-    var doccy = topLevel['__GLOBAL_DOCUMENT_CACHE@4'];
-
-    if (!doccy) {
-        doccy = topLevel['__GLOBAL_DOCUMENT_CACHE@4'] = minDoc;
-    }
-
-    module.exports = doccy;
-}
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"min-document":5}],11:[function(require,module,exports){
-module.exports = attributeToProperty
-
-var transform = {
-  'class': 'className',
-  'for': 'htmlFor',
-  'http-equiv': 'httpEquiv'
-}
-
-function attributeToProperty (h) {
-  return function (tagName, attrs, children) {
-    for (var attr in attrs) {
-      if (attr in transform) {
-        attrs[transform[attr]] = attrs[attr]
-        delete attrs[attr]
-      }
-    }
-    return h(tagName, attrs, children)
-  }
-}
-
-},{}],12:[function(require,module,exports){
-var attrToProp = require('hyperscript-attribute-to-property')
-
-var VAR = 0, TEXT = 1, OPEN = 2, CLOSE = 3, ATTR = 4
-var ATTR_KEY = 5, ATTR_KEY_W = 6
-var ATTR_VALUE_W = 7, ATTR_VALUE = 8
-var ATTR_VALUE_SQ = 9, ATTR_VALUE_DQ = 10
-var ATTR_EQ = 11, ATTR_BREAK = 12
-
-module.exports = function (h, opts) {
-  h = attrToProp(h)
-  if (!opts) opts = {}
-  var concat = opts.concat || function (a, b) {
-    return String(a) + String(b)
-  }
-
-  return function (strings) {
-    var state = TEXT, reg = ''
-    var arglen = arguments.length
-    var parts = []
-
-    for (var i = 0; i < strings.length; i++) {
-      if (i < arglen - 1) {
-        var arg = arguments[i+1]
-        var p = parse(strings[i])
-        var xstate = state
-        if (xstate === ATTR_VALUE_DQ) xstate = ATTR_VALUE
-        if (xstate === ATTR_VALUE_SQ) xstate = ATTR_VALUE
-        if (xstate === ATTR_VALUE_W) xstate = ATTR_VALUE
-        if (xstate === ATTR) xstate = ATTR_KEY
-        p.push([ VAR, xstate, arg ])
-        parts.push.apply(parts, p)
-      } else parts.push.apply(parts, parse(strings[i]))
-    }
-
-    var tree = [null,{},[]]
-    var stack = [[tree,-1]]
-    for (var i = 0; i < parts.length; i++) {
-      var cur = stack[stack.length-1][0]
-      var p = parts[i], s = p[0]
-      if (s === OPEN && /^\//.test(p[1])) {
-        var ix = stack[stack.length-1][1]
-        if (stack.length > 1) {
-          stack.pop()
-          stack[stack.length-1][0][2][ix] = h(
-            cur[0], cur[1], cur[2].length ? cur[2] : undefined
-          )
-        }
-      } else if (s === OPEN) {
-        var c = [p[1],{},[]]
-        cur[2].push(c)
-        stack.push([c,cur[2].length-1])
-      } else if (s === ATTR_KEY || (s === VAR && p[1] === ATTR_KEY)) {
-        var key = ''
-        var copyKey
-        for (; i < parts.length; i++) {
-          if (parts[i][0] === ATTR_KEY) {
-            key = concat(key, parts[i][1])
-          } else if (parts[i][0] === VAR && parts[i][1] === ATTR_KEY) {
-            if (typeof parts[i][2] === 'object' && !key) {
-              for (copyKey in parts[i][2]) {
-                if (parts[i][2].hasOwnProperty(copyKey) && !cur[1][copyKey]) {
-                  cur[1][copyKey] = parts[i][2][copyKey]
-                }
-              }
-            } else {
-              key = concat(key, parts[i][2])
-            }
-          } else break
-        }
-        if (parts[i][0] === ATTR_EQ) i++
-        var j = i
-        for (; i < parts.length; i++) {
-          if (parts[i][0] === ATTR_VALUE || parts[i][0] === ATTR_KEY) {
-            if (!cur[1][key]) cur[1][key] = strfn(parts[i][1])
-            else cur[1][key] = concat(cur[1][key], parts[i][1])
-          } else if (parts[i][0] === VAR
-          && (parts[i][1] === ATTR_VALUE || parts[i][1] === ATTR_KEY)) {
-            if (!cur[1][key]) cur[1][key] = strfn(parts[i][2])
-            else cur[1][key] = concat(cur[1][key], parts[i][2])
-          } else {
-            if (key.length && !cur[1][key] && i === j
-            && (parts[i][0] === CLOSE || parts[i][0] === ATTR_BREAK)) {
-              // https://html.spec.whatwg.org/multipage/infrastructure.html#boolean-attributes
-              // empty string is falsy, not well behaved value in browser
-              cur[1][key] = key.toLowerCase()
-            }
-            break
-          }
-        }
-      } else if (s === ATTR_KEY) {
-        cur[1][p[1]] = true
-      } else if (s === VAR && p[1] === ATTR_KEY) {
-        cur[1][p[2]] = true
-      } else if (s === CLOSE) {
-        if (selfClosing(cur[0]) && stack.length) {
-          var ix = stack[stack.length-1][1]
-          stack.pop()
-          stack[stack.length-1][0][2][ix] = h(
-            cur[0], cur[1], cur[2].length ? cur[2] : undefined
-          )
-        }
-      } else if (s === VAR && p[1] === TEXT) {
-        if (p[2] === undefined || p[2] === null) p[2] = ''
-        else if (!p[2]) p[2] = concat('', p[2])
-        if (Array.isArray(p[2][0])) {
-          cur[2].push.apply(cur[2], p[2])
-        } else {
-          cur[2].push(p[2])
-        }
-      } else if (s === TEXT) {
-        cur[2].push(p[1])
-      } else if (s === ATTR_EQ || s === ATTR_BREAK) {
-        // no-op
-      } else {
-        throw new Error('unhandled: ' + s)
-      }
-    }
-
-    if (tree[2].length > 1 && /^\s*$/.test(tree[2][0])) {
-      tree[2].shift()
-    }
-
-    if (tree[2].length > 2
-    || (tree[2].length === 2 && /\S/.test(tree[2][1]))) {
-      throw new Error(
-        'multiple root elements must be wrapped in an enclosing tag'
-      )
-    }
-    if (Array.isArray(tree[2][0]) && typeof tree[2][0][0] === 'string'
-    && Array.isArray(tree[2][0][2])) {
-      tree[2][0] = h(tree[2][0][0], tree[2][0][1], tree[2][0][2])
-    }
-    return tree[2][0]
-
-    function parse (str) {
-      var res = []
-      if (state === ATTR_VALUE_W) state = ATTR
-      for (var i = 0; i < str.length; i++) {
-        var c = str.charAt(i)
-        if (state === TEXT && c === '<') {
-          if (reg.length) res.push([TEXT, reg])
-          reg = ''
-          state = OPEN
-        } else if (c === '>' && !quot(state)) {
-          if (state === OPEN) {
-            res.push([OPEN,reg])
-          } else if (state === ATTR_KEY) {
-            res.push([ATTR_KEY,reg])
-          } else if (state === ATTR_VALUE && reg.length) {
-            res.push([ATTR_VALUE,reg])
-          }
-          res.push([CLOSE])
-          reg = ''
-          state = TEXT
-        } else if (state === TEXT) {
-          reg += c
-        } else if (state === OPEN && /\s/.test(c)) {
-          res.push([OPEN, reg])
-          reg = ''
-          state = ATTR
-        } else if (state === OPEN) {
-          reg += c
-        } else if (state === ATTR && /[\w-]/.test(c)) {
-          state = ATTR_KEY
-          reg = c
-        } else if (state === ATTR && /\s/.test(c)) {
-          if (reg.length) res.push([ATTR_KEY,reg])
-          res.push([ATTR_BREAK])
-        } else if (state === ATTR_KEY && /\s/.test(c)) {
-          res.push([ATTR_KEY,reg])
-          reg = ''
-          state = ATTR_KEY_W
-        } else if (state === ATTR_KEY && c === '=') {
-          res.push([ATTR_KEY,reg],[ATTR_EQ])
-          reg = ''
-          state = ATTR_VALUE_W
-        } else if (state === ATTR_KEY) {
-          reg += c
-        } else if ((state === ATTR_KEY_W || state === ATTR) && c === '=') {
-          res.push([ATTR_EQ])
-          state = ATTR_VALUE_W
-        } else if ((state === ATTR_KEY_W || state === ATTR) && !/\s/.test(c)) {
-          res.push([ATTR_BREAK])
-          if (/[\w-]/.test(c)) {
-            reg += c
-            state = ATTR_KEY
-          } else state = ATTR
-        } else if (state === ATTR_VALUE_W && c === '"') {
-          state = ATTR_VALUE_DQ
-        } else if (state === ATTR_VALUE_W && c === "'") {
-          state = ATTR_VALUE_SQ
-        } else if (state === ATTR_VALUE_DQ && c === '"') {
-          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
-          reg = ''
-          state = ATTR
-        } else if (state === ATTR_VALUE_SQ && c === "'") {
-          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
-          reg = ''
-          state = ATTR
-        } else if (state === ATTR_VALUE_W && !/\s/.test(c)) {
-          state = ATTR_VALUE
-          i--
-        } else if (state === ATTR_VALUE && /\s/.test(c)) {
-          res.push([ATTR_BREAK],[ATTR_VALUE,reg])
-          reg = ''
-          state = ATTR
-        } else if (state === ATTR_VALUE || state === ATTR_VALUE_SQ
-        || state === ATTR_VALUE_DQ) {
-          reg += c
-        }
-      }
-      if (state === TEXT && reg.length) {
-        res.push([TEXT,reg])
-        reg = ''
-      } else if (state === ATTR_VALUE && reg.length) {
-        res.push([ATTR_VALUE,reg])
-        reg = ''
-      } else if (state === ATTR_VALUE_DQ && reg.length) {
-        res.push([ATTR_VALUE,reg])
-        reg = ''
-      } else if (state === ATTR_VALUE_SQ && reg.length) {
-        res.push([ATTR_VALUE,reg])
-        reg = ''
-      } else if (state === ATTR_KEY) {
-        res.push([ATTR_KEY,reg])
-        reg = ''
-      }
-      return res
-    }
-  }
-
-  function strfn (x) {
-    if (typeof x === 'function') return x
-    else if (typeof x === 'string') return x
-    else if (x && typeof x === 'object') return x
-    else return concat('', x)
-  }
-}
-
-function quot (state) {
-  return state === ATTR_VALUE_SQ || state === ATTR_VALUE_DQ
-}
-
-var hasOwn = Object.prototype.hasOwnProperty
-function has (obj, key) { return hasOwn.call(obj, key) }
-
-var closeRE = RegExp('^(' + [
-  'area', 'base', 'basefont', 'bgsound', 'br', 'col', 'command', 'embed',
-  'frame', 'hr', 'img', 'input', 'isindex', 'keygen', 'link', 'meta', 'param',
-  'source', 'track', 'wbr',
-  // SVG TAGS
-  'animate', 'animateTransform', 'circle', 'cursor', 'desc', 'ellipse',
-  'feBlend', 'feColorMatrix', 'feComponentTransfer', 'feComposite',
-  'feConvolveMatrix', 'feDiffuseLighting', 'feDisplacementMap',
-  'feDistantLight', 'feFlood', 'feFuncA', 'feFuncB', 'feFuncG', 'feFuncR',
-  'feGaussianBlur', 'feImage', 'feMergeNode', 'feMorphology',
-  'feOffset', 'fePointLight', 'feSpecularLighting', 'feSpotLight', 'feTile',
-  'feTurbulence', 'font-face-format', 'font-face-name', 'font-face-uri',
-  'glyph', 'glyphRef', 'hkern', 'image', 'line', 'missing-glyph', 'mpath',
-  'path', 'polygon', 'polyline', 'rect', 'set', 'stop', 'tref', 'use', 'view',
-  'vkern'
-].join('|') + ')(?:[\.#][a-zA-Z0-9\u007F-\uFFFF_:-]+)*$')
-function selfClosing (tag) { return closeRE.test(tag) }
-
-},{"hyperscript-attribute-to-property":11}],13:[function(require,module,exports){
+},{"closest":5}],7:[function(require,module,exports){
 
 /**
  * Element prototype.
@@ -610,7 +333,7 @@ function match(el, selector) {
   }
   return false;
 }
-},{}],14:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // Create a range object for efficently rendering strings to elements.
 var range;
 
@@ -1183,7 +906,7 @@ function morphdom(fromNode, toNode, options) {
 
 module.exports = morphdom;
 
-},{}],15:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1411,7 +1134,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":16}],16:[function(require,module,exports){
+},{"_process":10}],10:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1507,7 +1230,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],17:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 var Stringify = require('./stringify');
@@ -1518,7 +1241,7 @@ module.exports = {
     parse: Parse
 };
 
-},{"./parse":18,"./stringify":19}],18:[function(require,module,exports){
+},{"./parse":12,"./stringify":13}],12:[function(require,module,exports){
 'use strict';
 
 var Utils = require('./utils');
@@ -1687,7 +1410,7 @@ module.exports = function (str, opts) {
     return Utils.compact(obj);
 };
 
-},{"./utils":20}],19:[function(require,module,exports){
+},{"./utils":14}],13:[function(require,module,exports){
 'use strict';
 
 var Utils = require('./utils');
@@ -1826,7 +1549,7 @@ module.exports = function (object, opts) {
     return keys.join(delimiter);
 };
 
-},{"./utils":20}],20:[function(require,module,exports){
+},{"./utils":14}],14:[function(require,module,exports){
 'use strict';
 
 var hexTable = (function () {
@@ -1992,8 +1715,8 @@ exports.isBuffer = function (obj) {
     return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
 };
 
-},{}],21:[function(require,module,exports){
-var bel = require('bel') // turns template tag into DOM elements
+},{}],15:[function(require,module,exports){
+var bel = {} // turns template tag into DOM elements
 var morphdom = require('morphdom') // efficiently diffs + morphs two DOM elements
 var defaultEvents = require('./update-events.js') // default events to be copied when dom elements update
 
@@ -2028,7 +1751,7 @@ module.exports.update = function (fromNode, toNode, opts) {
   }
 }
 
-},{"./update-events.js":22,"bel":4,"morphdom":14}],22:[function(require,module,exports){
+},{"./update-events.js":16,"morphdom":8}],16:[function(require,module,exports){
 module.exports = [
   // attribute events (can be set with attributes)
   'onclick',
