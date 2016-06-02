@@ -25,6 +25,11 @@
   width: 100%;
 }
 
+/* Search component styles */
+/* todo: csjs */
+
+/* Borrowed from https://github.com/component/component.github.io */
+/* http://component.github.io/ */
 .gpos-items {
   margin: 40px 0;
   width: 100%;
