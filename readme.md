@@ -60,22 +60,23 @@ let view = gpos(template, {
   language: 'markdown'
 });
 
+// Get the reference to an input and a container DOM elements
+let input = document.querySelector('.js-search');
+let container = document.querySelector('.js-results');
+
+// Define the search function to call on input change (and page load)
 let search = (value) => {
-  console.log('init query', value);
   return view.search(value).then((el) => {
     yo.update(container, el)
-    input.focus();
   });
 };
 
-let input = document.querySelector('.js-search');
-let container = document.querySelector('.js-results');
 delegate(document.body, '.js-search', 'input', (e) => {
   search(input.value);
 }, false);
 
 let query = qs.parse(location.search.replace(/^\?/, '')).q || '';
-search(query);
+window.addEventListener('load', () => search(query));
 ```:
 
 ...
