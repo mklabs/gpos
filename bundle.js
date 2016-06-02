@@ -1,6 +1,14 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Gpos = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
+var read = require('fs').readFileSync;
+var gpos = module.exports = require('./lib');
+gpos.styles = require('./lib/search.css');
+gpos.opensearch = read('./lib/opensearch.xml', 'utf8');
+
+},{"./lib":2,"./lib/search.css":3,"fs":7}],2:[function(require,module,exports){
+'use strict';
+
 // Sizes:
 //
 // - yo-yo - tiny (few bytes, includes bel)
@@ -19,7 +27,9 @@ var bel = require('bel');
 var path = require('path');
 var delegate = require('delegate');
 
-},{"bel":2,"delegate":5,"path":11,"qs":13,"yo-yo":17}],2:[function(require,module,exports){
+},{"bel":4,"delegate":9,"path":15,"qs":17,"yo-yo":21}],3:[function(require,module,exports){
+var css = ".site-header {\n  text-align: right;\n}\n.site-header a {\n  padding: 10px;\n  color: #000;\n  font-size: 11px;\n  text-decoration: none;\n}\n.search-input {\n  position: fixed;\n  bottom: -2px;\n  left: 0;\n  z-index: 10;\n  font-size: 40px;\n  padding: 15px 30px;\n  font-family: inherit;\n  font-weight: 100;\n  border: none;\n  outline: none;\n  border-bottom: 5px solid #eee;\n  background: rgba(255, 255, 255, .95);\n  width: 100%;\n}\n/* Search component styles */\n/* todo: csjs */\n/* Borrowed from https://github.com/component/component.github.io */\n/* http://component.github.io/ */\n.gpos-items {\n  margin: 40px 0;\n  width: 100%;\n  max-width: 1140px;\n  min-width: 300px;\n}\n.gpos-item {\n  position: relative;\n  overflow: hidden;\n  border-bottom: 1px solid #eee;\n  padding: 16px 14px;\n}\n.gpos-item .header {\n  float: left;\n  width: 20%;\n  margin-right: 20px;\n}\n.gpos-item h3 {\n  margin: 0;\n  line-height: 1.3;\n}\n.gpos-item h3 a {\n  color: inherit;\n  font-size: 14px;\n}\n.gpos-item .repo {\n  font-size: 12px;\n  color: #7f7f7f;\n}\n.gpos-item p {\n  overflow: hidden;\n  margin: 2px 0 0 0;\n  line-height: 1.3;\n  max-width: 40em;\n}\n.gpos-item p a {\n  text-decoration: none;\n  color: #000;\n}\n.gpos-item .info {\n  float: right;\n  max-width: 10em;\n  margin-left: 20px;\n  font-size: 12px;\n  color: #7f7f7f;\n  display: block;\n  line-height: 1.4;\n}\n.gpos-item .info td {\n  vertical-align: top;\n}\n.gpos-item .info td:first-child {\n  opacity: 0.6;\n  width: 20%;\n  padding-right: 10px;\n}\n"; (require("browserify-css").createStyle(css, { "href": "lib\\search.css"})); module.exports = css;
+},{"browserify-css":6}],4:[function(require,module,exports){
 var document = require('global/document')
 var hyperx = require('hyperx')
 
@@ -140,9 +150,63 @@ function belCreateElement (tag, props, children) {
 module.exports = hyperx(belCreateElement)
 module.exports.createElement = belCreateElement
 
-},{"global/document":6,"hyperx":8}],3:[function(require,module,exports){
+},{"global/document":10,"hyperx":12}],5:[function(require,module,exports){
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
+'use strict';
+// For more information about browser field, check out the browser field at https://github.com/substack/browserify-handbook#browser-field.
+
+module.exports = {
+    // Create a <link> tag with optional data attributes
+    createLink: function(href, attributes) {
+        var head = document.head || document.getElementsByTagName('head')[0];
+        var link = document.createElement('link');
+
+        link.href = href;
+        link.rel = 'stylesheet';
+
+        for (var key in attributes) {
+            if ( ! attributes.hasOwnProperty(key)) {
+                continue;
+            }
+            var value = attributes[key];
+            link.setAttribute('data-' + key, value);
+        }
+
+        head.appendChild(link);
+    },
+    // Create a <style> tag with optional data attributes
+    createStyle: function(cssText, attributes) {
+        var head = document.head || document.getElementsByTagName('head')[0],
+            style = document.createElement('style');
+
+        style.type = 'text/css';
+
+        for (var key in attributes) {
+            if ( ! attributes.hasOwnProperty(key)) {
+                continue;
+            }
+            var value = attributes[key];
+            style.setAttribute('data-' + key, value);
+        }
+        
+        if (style.sheet) { // for jsdom and IE9+
+            style.innerHTML = cssText;
+            style.sheet.cssText = cssText;
+            head.appendChild(style);
+        } else if (style.styleSheet) { // for IE8 and below
+            head.appendChild(style);
+            style.styleSheet.cssText = cssText;
+        } else { // for Chrome, Firefox, and Safari
+            style.appendChild(document.createTextNode(cssText));
+            head.appendChild(style);
+        }
+    }
+};
+
+},{}],7:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],8:[function(require,module,exports){
 var matches = require('matches-selector')
 
 module.exports = function (element, selector, checkYoSelf) {
@@ -154,7 +218,7 @@ module.exports = function (element, selector, checkYoSelf) {
   }
 }
 
-},{"matches-selector":9}],5:[function(require,module,exports){
+},{"matches-selector":13}],9:[function(require,module,exports){
 var closest = require('closest');
 
 /**
@@ -200,7 +264,7 @@ function listener(element, selector, type, callback) {
 
 module.exports = delegate;
 
-},{"closest":4}],6:[function(require,module,exports){
+},{"closest":8}],10:[function(require,module,exports){
 (function (global){
 var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
@@ -219,7 +283,7 @@ if (typeof document !== 'undefined') {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"min-document":3}],7:[function(require,module,exports){
+},{"min-document":5}],11:[function(require,module,exports){
 module.exports = attributeToProperty
 
 var transform = {
@@ -240,7 +304,7 @@ function attributeToProperty (h) {
   }
 }
 
-},{}],8:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var attrToProp = require('hyperscript-attribute-to-property')
 
 var VAR = 0, TEXT = 1, OPEN = 2, CLOSE = 3, ATTR = 4
@@ -505,7 +569,7 @@ var closeRE = RegExp('^(' + [
 ].join('|') + ')(?:[\.#][a-zA-Z0-9\u007F-\uFFFF_:-]+)*$')
 function selfClosing (tag) { return closeRE.test(tag) }
 
-},{"hyperscript-attribute-to-property":7}],9:[function(require,module,exports){
+},{"hyperscript-attribute-to-property":11}],13:[function(require,module,exports){
 
 /**
  * Element prototype.
@@ -546,7 +610,7 @@ function match(el, selector) {
   }
   return false;
 }
-},{}],10:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 // Create a range object for efficently rendering strings to elements.
 var range;
 
@@ -1119,7 +1183,7 @@ function morphdom(fromNode, toNode, options) {
 
 module.exports = morphdom;
 
-},{}],11:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1347,7 +1411,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":12}],12:[function(require,module,exports){
+},{"_process":16}],16:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1443,7 +1507,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],13:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 var Stringify = require('./stringify');
@@ -1454,7 +1518,7 @@ module.exports = {
     parse: Parse
 };
 
-},{"./parse":14,"./stringify":15}],14:[function(require,module,exports){
+},{"./parse":18,"./stringify":19}],18:[function(require,module,exports){
 'use strict';
 
 var Utils = require('./utils');
@@ -1623,7 +1687,7 @@ module.exports = function (str, opts) {
     return Utils.compact(obj);
 };
 
-},{"./utils":16}],15:[function(require,module,exports){
+},{"./utils":20}],19:[function(require,module,exports){
 'use strict';
 
 var Utils = require('./utils');
@@ -1762,7 +1826,7 @@ module.exports = function (object, opts) {
     return keys.join(delimiter);
 };
 
-},{"./utils":16}],16:[function(require,module,exports){
+},{"./utils":20}],20:[function(require,module,exports){
 'use strict';
 
 var hexTable = (function () {
@@ -1928,7 +1992,7 @@ exports.isBuffer = function (obj) {
     return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
 };
 
-},{}],17:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var bel = require('bel') // turns template tag into DOM elements
 var morphdom = require('morphdom') // efficiently diffs + morphs two DOM elements
 var defaultEvents = require('./update-events.js') // default events to be copied when dom elements update
@@ -1964,7 +2028,7 @@ module.exports.update = function (fromNode, toNode, opts) {
   }
 }
 
-},{"./update-events.js":18,"bel":2,"morphdom":10}],18:[function(require,module,exports){
+},{"./update-events.js":22,"bel":4,"morphdom":14}],22:[function(require,module,exports){
 module.exports = [
   // attribute events (can be set with attributes)
   'onclick',
