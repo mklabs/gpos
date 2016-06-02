@@ -111,11 +111,10 @@ if (!initialQuery) {
 
 let search = (value) => {
   console.log('init query', value);
-  return view.search(value)
-    .then((el) => {
-      yo.update(container, el)
-      input.focus();
-    });
+  return view.search(value).then((el) => {
+    yo.update(container, el)
+    input.focus();
+  });
 };
 
 search(initialQuery);

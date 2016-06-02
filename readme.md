@@ -9,7 +9,7 @@ client side lib that talks to `https://api.github.com/search/code?q=` API endpoi
 
 1. Uses `fetch()` to query Github code search
    ([polyfill](https://github.com/mklabs/polyfill))
-2. Pass the result to a template String or Function
+2. Pass the result to a template Function
 3. Builds a new DOM element using bel
 4. Appends the created element to the DOM.
 
@@ -20,34 +20,62 @@ client side lib that talks to `https://api.github.com/search/code?q=` API endpoi
 - http://www.opensearch.org/Home
 - http://blog.unto.net/add-opensearch-to-your-site-in-five-minutes.html
 
-## Usage
-
-```js
-// Require the lib
-let opns = require('gh-opns');
-
-// Build a template function, here using
-let template = ({ title, content }) => {
-  return `<section>
-    <div class="opns-item">
-      <span class="opns-item-title">${title}</span>
-      <span class="opns-item-content">${content}</span>
-    </div>
-  </section>`;
-};
-
-let view = opns(template, {
-  repo: 'user/user.github.com',
-  language: 'markdown'
-})
-
-view.search('beep boop')
-  .then(res => res.dom())
-  .then((el) => {
-    document.body.appendChild(el);
-  });
-```
-
 ---
 
 **WIP** You can see a (buggy) version up at http://mkla.bz/search/?q=es6
+
+I got the basic feature working for my repo but still need to rewrite into a lib.
+
+- [ ] option token (in url ?token=${token})
+- [ ] throttle input
+- [ ] handle errors (status != 200)
+- [ ] default template / dom el creation. using bel or base-element.
+- [ ] options.link - transform filename into href for `<a />` tags.
+
+## Install
+
+> todo: browserify, global exports.
+
+## Usage
+
+Basic query / display.
+
+```js
+let view = gpos(template, {
+  repo: 'user/user.github.com',
+  language: 'markdown'
+});
+
+view.search(query).then((el) => {
+  document.body.appendChild(el);
+});
+```
+
+Bind an input to query and update the dom on input change. Using [bel][] and
+[yoyo][] to update the results on input change.
+
+```js
+let view = gpos(template, {
+  repo: 'user/user.github.com',
+  language: 'markdown'
+});
+
+let search = (value) => {
+  console.log('init query', value);
+  return view.search(value).then((el) => {
+    yo.update(container, el)
+    input.focus();
+  });
+};
+
+let input = document.querySelector('.js-search');
+let container = document.querySelector('.js-results');
+delegate(document.body, '.js-search', 'input', (e) => {
+  search(input.value);
+}, false);
+
+let query = qs.parse(location.search.replace(/^\?/, '')).q || '';
+search(query);
+```:
+
+...
