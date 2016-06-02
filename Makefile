@@ -16,7 +16,7 @@ ghpages:
 
 ci: commit
 commit:
-	git commit -am "$(curl -s whatthecommit.com/index.txt)"
+	bash -c 'git commit -am "$(curl -s whatthecommit.com/index.txt)"'
 
 push:
 	git push origin master
