@@ -1,13 +1,18 @@
 {
-  "name": "gh-pages-search",
+  "name": "gpos",
   "version": "0.1.0",
   "description": "Github Pages search engine powered by Github code search API",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "ci": "git commit -am \"$(curl -s whatthecommit.com/index.txt)\""
+    "test": "bake -h"
+  },
+  "dependencies": {
+    "bel": "^4.3.1",
   },
   "devDependencies": {
+    "delegate": "^3.0.1",
+    "qs": "^6.2.0",
+    "yo-yo": "^1.2.1",
     "babel-cli": "^6.9.0",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-regenerator": "^6.9.0",
@@ -90,11 +95,5 @@
     "url": "https://github.com/mklabs/gh-pages-search/issues"
   },
   "homepage": "https://github.com/mklabs/gh-pages-search#readme",
-  "license": "ISC",
-  "dependencies": {
-    "bel": "^4.3.1",
-    "delegate": "^3.0.1",
-    "qs": "^6.2.0",
-    "yo-yo": "^1.2.1"
-  }
+  "license": "MIT"
 }
