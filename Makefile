@@ -1,17 +1,21 @@
 
-all: build test
+all: build
 
 # Serve
 serve:
 	list .
 
 # Build
-build: bro brolib minify stat
-bro:
+build: bro minify stat
+
+bro: brolib demo
 	browserify -e index.js -g yo-yoify -s Gpos > dist/bundle.js
 
+demo:
+	browserify -e demo.js > dist/demo.js
+
 brolib:
-	browserify -e lib/index.js -g yo-yoify -s Gpos > dist/gpos.js
+	browserify -e gpos.js -g yo-yoify -s Gpos > dist/gpos.js
 
 minify: uglify uglifylib
 
@@ -45,7 +49,7 @@ zuul:
 	zuul --local 3000 --ui mocha-qunit -- test/gpos.js
 
 watch:
-	watchd Makefile package.json test/gpos.js lib/index.js -c "zuul -h"
+	watchd Makefile package.json test/gpos.js lib/index.js -c "bake bro"
 
 
 test: zuul

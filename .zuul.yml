@@ -1,2 +1,6 @@
 browserify:
   - plugin: livereactload
+  - transform: browserify-css
+  - transform: babelify
+  - transform: hyperxify
+  - transform: brfs
