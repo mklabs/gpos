@@ -6,7 +6,10 @@ serve:
 	list .
 
 # Build
-build: bro minify stat
+build: bro minify css stat
+
+css:
+	bash -c 'cp lib/gpos.css dist/'
 
 bro: brolib demo
 	browserify -e index.js -g yo-yoify -s Gpos > dist/bundle.js
@@ -33,7 +36,7 @@ watchify:
 
 # Deploy
 ghpages:
-	git subtree push --prefix . origin gh-pages
+	git subtree push --prefix ./ origin gh-pages
 
 ci: commit
 commit:
