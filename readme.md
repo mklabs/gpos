@@ -10,7 +10,7 @@ client side lib that talks to `https://api.github.com/search/code?q=` API endpoi
 - Uses `fetch()` to query Github code search
    ([polyfill](https://github.com/mklabs/polyfill))
 - Pass the result to a template function
-- Builds a new DOM element using bel by default
+- Builds a new DOM element using [bel][] by default
 - Appends the created element to the DOM
 
 ---
@@ -19,7 +19,7 @@ client side lib that talks to `https://api.github.com/search/code?q=` API endpoi
   - [x] option token (in url ?token=${token})
   - [ ] throttle input
   - [ ] handle errors (status != 200)
-  - [x] default template / dom el creation. using bel or base-element.
+  - [x] default template / dom el creation. using bel
   - [ ] options.link - transform filename into href for `<a />` tags.
 
 ## Install
@@ -185,3 +185,8 @@ $ make stat
 - https://developer.github.com/v3/search/
 - http://www.opensearch.org/Home
 - http://blog.unto.net/add-opensearch-to-your-site-in-five-minutes.html
+- [bel][]
+- [yo-yo][]
+
+[yo-yo]: https://github.com/maxogden/yo-yo
+[bel]: https://github.com/shama/bel
