@@ -13,14 +13,18 @@ client side lib that talks to `https://api.github.com/search/code?q=` API endpoi
 - Builds a new DOM element using [bel][] by default
 - Appends the created element to the DOM
 
+It's useful if you'd like to add a search page to your Jekyll blog, or search
+through project documentation.
+
 ---
 
 - *WIP*
   - [x] option token (in url ?token=${token})
+  - [x] default template / dom el creation. using bel
   - [ ] throttle input
   - [ ] handle errors (status != 200)
-  - [x] default template / dom el creation. using bel
   - [ ] options.link - transform filename into href for `<a />` tags.
+  - [ ] check github api to see if we can query gollum wikis
 
 ## Install
 
@@ -189,4 +193,5 @@ $ make stat
 - [yo-yo][]
 
 [yo-yo]: https://github.com/maxogden/yo-yo
+[yoyo]: https://github.com/maxogden/yo-yo
 [bel]: https://github.com/shama/bel
