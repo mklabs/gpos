@@ -7,30 +7,20 @@
 Written for easy inclusion on any gh-pages repo / branch. This is just a little ([3.7k](#sizes))
 client side lib that talks to `https://api.github.com/search/code?q=` API endpoint.
 
-1. Uses `fetch()` to query Github code search
+- Uses `fetch()` to query Github code search
    ([polyfill](https://github.com/mklabs/polyfill))
-2. Pass the result to a template Function
-3. Builds a new DOM element using bel
-4. Appends the created element to the DOM.
-
-**Related**
-
-- https://github.com/blog/1564-code-search-api
-- https://developer.github.com/v3/search/
-- http://www.opensearch.org/Home
-- http://blog.unto.net/add-opensearch-to-your-site-in-five-minutes.html
+- Pass the result to a template function
+- Builds a new DOM element using bel by default
+- Appends the created element to the DOM
 
 ---
 
-**WIP** You can see a (buggy) version up at http://mkla.bz/search/?q=es6
-
-I got the basic feature working for my repo but still need to rewrite into a lib.
-
-- [x] option token (in url ?token=${token})
-- [ ] throttle input
-- [ ] handle errors (status != 200)
-- [x] default template / dom el creation. using bel or base-element.
-- [ ] options.link - transform filename into href for `<a />` tags.
+- *WIP*
+  - [x] option token (in url ?token=${token})
+  - [ ] throttle input
+  - [ ] handle errors (status != 200)
+  - [x] default template / dom el creation. using bel or base-element.
+  - [ ] options.link - transform filename into href for `<a />` tags.
 
 ## Install
 
@@ -188,3 +178,10 @@ $ make stat
 -rwxrwxrwx 1 root root 4.5K Jun  3 04:38 gpos.js
 -rwxrwxrwx 1 root root 3.7K Jun  3 04:38 gpos.min.js
 ```
+
+## Links
+
+- https://github.com/blog/1564-code-search-api
+- https://developer.github.com/v3/search/
+- http://www.opensearch.org/Home
+- http://blog.unto.net/add-opensearch-to-your-site-in-five-minutes.html

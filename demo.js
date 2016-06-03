@@ -1,6 +1,6 @@
-const qs   = require('qs');
-const yo   = require('yo-yo');
-const dlgt = require('delegate');
+const qs     = require('qs');
+const yo     = require('yo-yo');
+const dlgt   = require('delegate');
 const marked = require('marked');
 
 let params = qs.parse(location.search.replace(/^\?/, ''));
