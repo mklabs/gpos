@@ -1,6 +1,6 @@
 {
   "name": "gpos",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Github Pages search engine powered by Github code search API",
   "main": "index.js",
   "scripts": {
