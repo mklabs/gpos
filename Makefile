@@ -33,7 +33,7 @@ watchify:
 
 # Deploy
 ghpages:
-	git subtree push --prefix yov origin gh-pages
+	git subtree push --prefix . origin gh-pages
 
 ci: commit
 commit:
@@ -43,6 +43,20 @@ push:
 	git push origin master
 
 deploy: ghpages push
+
+release: version push publish
+
+version:
+	standard-version -m '%s'
+
+publish:
+	npm publish
+
+push:
+	git push origin master --tags
+
+version:
+	standard-version
 
 # Tests
 zuul:
