@@ -34,9 +34,11 @@ through project documentation.
 
 **global**
 
-    <script defer src="https://cdn.rawgit.com/mklabs/gpos/master/dist/bundle.js"></script>
+```
+<script defer src="https://cdn.rawgit.com/mklabs/gpos/master/dist/bundle.js"></script>
+```
 
-Will expose `gpos` as `window.gpos`.
+Will expose `gpos` as `window.Gpos`.
 
 ## Usage
 
