@@ -36,7 +36,7 @@ watchify:
 
 # Deploy
 ghpages:
-	git subtree push --prefix ./ origin gh-pages
+	git subtree push --prefix dist origin gh-pages
 
 ci: commit
 commit:

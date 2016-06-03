@@ -4,7 +4,7 @@
 > API](https://github.com/blog/1564-code-search-api) and
 > [opensearch](http://www.opensearch.org/Home)
 
-Written for easy inclusion on any gh-pages repo / branch. This is just a little
+Written for easy inclusion on any gh-pages repo / branch. This is just a little ([3.7k](#sizes))
 client side lib that talks to `https://api.github.com/search/code?q=` API endpoint.
 
 1. Uses `fetch()` to query Github code search
