@@ -22,7 +22,6 @@ let readme = document.querySelector('.js-readme');
 let head = 'cd169b5a1e9fa60d2995a815c135b58a41f2180e';
 
 let getReadme = () => {
-  console.log('get readme');
   return fetch(`https://cdn.rawgit.com/mklabs/gpos/${head}/readme.md`)
     .then(res => res.text())
     .then(txt => marked(txt))
@@ -31,6 +30,8 @@ let getReadme = () => {
 
 let search = (value) => {
   if (!readme.children.length) getReadme();
+
+  input.focus();
   return view.search(value).then((el) => {
     readme.removeAttribute('hidden');
     yo.update(container, el)
