@@ -1,9 +1,10 @@
 const qs   = require('qs');
 const yo   = require('yo-yo');
 const dlgt = require('delegate');
+const marked = require('marked');
 
 let params = qs.parse(location.search.replace(/^\?/, ''));
-let query = params.q || '';
+let query = params.q || 'GitHub Pages Open Search';
 
 var gpos = require('./');
 
@@ -14,18 +15,28 @@ let view = gpos({
   language: 'js'
 });
 
-// Get the reference to an input and a container DOM elements
 let input = document.querySelector('.js-search');
 let container = document.querySelector('.js-results');
+let readme = document.querySelector('.js-readme');
 
-// Define the search function to call on input change (and page load)
+let head = 'cd169b5a1e9fa60d2995a815c135b58a41f2180e';
+
+let getReadme = () => {
+  console.log('get readme');
+  return fetch(`https://cdn.rawgit.com/mklabs/gpos/${head}/readme.md`)
+    .then(res => res.text())
+    .then(txt => marked(txt))
+    .then(md => readme.innerHTML = md)
+};
+
 let search = (value) => {
+  if (!readme.children.length) getReadme();
   return view.search(value).then((el) => {
+    readme.removeAttribute('hidden');
     yo.update(container, el)
   });
 };
 
-// Trigger a search on input change
 dlgt(document.body, '.js-search', 'input', (e) => {
   search(input.value);
 }, false);

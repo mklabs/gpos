@@ -93,10 +93,8 @@ var Search = function () {
       var query = this.query;
       var options = this.options;
 
-      console.log('%d results: ', res.total_count);
-      if (res.items) res.items.forEach(function (item) {
-        return console.log(item);
-      });
+      // console.log('%d results: ', res.total_count);
+      // if (res.items) res.items.forEach(item => console.log(item));
       return this.template(res, query, options);
     }
   }, {
