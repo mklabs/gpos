@@ -1,20 +1,23 @@
 # gpos - GitHub Pages Open Search
 
-> Search engine on Github Pages using Github [code search
-> API](https://github.com/blog/1564-code-search-api) and
-> [opensearch](http://www.opensearch.org/Home)
+Search engine for Github Pages using Github [code search
+API](https://github.com/blog/1564-code-search-api) and
+[opensearch](http://www.opensearch.org/Home)
 
-Written for easy inclusion on any gh-pages repo / branch. This is just a little ([3.7k](#sizes))
-client side lib that talks to `https://api.github.com/search/code?q=` API endpoint.
+---
+
+This is just a little ([3.7k](#sizes)) client side lib that talks to
+`https://api.github.com/search/code?q=` API endpoint.
+
+Written for easy inclusion on any gh-pages repo / branch. It's useful if you'd
+like to add [a search page](mkla.bz/search/?q=Make) to your Jekyll blog, or
+search through project documentation.
 
 - Uses `fetch()` to query Github code search
    ([polyfill](https://github.com/mklabs/polyfill))
 - Pass the result to a template function
 - Builds a new DOM element using [bel][] by default
 - Appends the created element to the DOM
-
-It's useful if you'd like to add a search page to your Jekyll blog, or search
-through project documentation.
 
 ---
 
@@ -34,7 +37,7 @@ through project documentation.
 
 **global**
 
-```
+```html
 <script defer src="https://cdn.rawgit.com/mklabs/gpos/master/dist/bundle.js"></script>
 ```
 
