@@ -10,7 +10,7 @@ var gpos = require('./');
 
 let view = gpos({
   token: params.t,
-  baseURL: 'https://github.com/mklabs/gpos/tree/master',
+  baseURL: 'https://github.com/mklabs/gpos/tree/master/',
   repo: 'mklabs/gpos',
   language: 'js'
 });
