@@ -92,7 +92,7 @@ window.addEventListener('load', () => search(query));
 ### require('gpos')
 
 Will include CSS bundle and opensearch.xml template, with both [bel][] and
-[yo-yo][], bundle size is about 40k.
+[yo-yo][], bundle size is about 20k.
 
 ```js
 var gpos = require('gpos');
@@ -107,7 +107,7 @@ gpos('Search content').then((el) => document.body.appendChild(el))
 
 Will include only `gpos` library, without CSS, opensearch template or any additional libs.
 
-Bundle size is about 11k.
+Bundle size is about 4k.
 
 ```js
 var gpos = require('gpos/gpos');
@@ -183,8 +183,8 @@ Total: 36k
 
 ```
 $ make stat
--rwxrwxrwx 1 root root  11K Jun  3 02:59 bundle.js
--rwxrwxrwx 1 root root 8.2K Jun  3 02:59 bundle.min.js
--rwxrwxrwx 1 root root 3.7K Jun  3 02:59 gpos.js
--rwxrwxrwx 1 root root 2.9K Jun  3 02:59 gpos.min.js
+-rwxrwxrwx 1 root root  20K Jun  3 04:38 bundle.js
+-rwxrwxrwx 1 root root  14K Jun  3 04:38 bundle.min.js
+-rwxrwxrwx 1 root root 4.5K Jun  3 04:38 gpos.js
+-rwxrwxrwx 1 root root 3.7K Jun  3 04:38 gpos.min.js
 ```

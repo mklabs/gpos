@@ -16,20 +16,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// Sizes:
-//
-// - yo-yo - tiny (few bytes, includes bel)
-// - qs - 10K
-// - bel - 10K
-// - path - 3K
-// - delegate - 1K
-// - browserify - 12k
-// - gpos - 4k
-//
-// Total: 36k
-
-// Search def
-
 var Search = function () {
   _createClass(Search, [{
     key: 'help',
@@ -45,6 +31,7 @@ var Search = function () {
     key: 'defaults',
     get: function get() {
       return {
+        baseURL: '/',
         language: 'javascript',
         repo: 'mklabs/gpos'
       };
@@ -76,7 +63,10 @@ var Search = function () {
       var language = _ref.language;
       var repo = _ref.repo;
 
-      return this.endpoint + (query + '+in:file+language:' + language + '+repo:' + repo);
+      var url = this.endpoint;
+      url += query + '+in:file+language:' + language + '+repo:' + repo;
+      if (this.options.token) url += '&access_token=' + this.options.token;
+      return url;
     }
   }, {
     key: 'fetch',
@@ -106,7 +96,14 @@ var Search = function () {
   }, {
     key: 'dom',
     value: function dom(res) {
-      return this.template(res, this.query);
+      var query = this.query;
+      var options = this.options;
+
+      console.log('%d results: ', res.total_count);
+      if (res.items) res.items.forEach(function (item) {
+        return console.log(item);
+      });
+      return this.template(res, query, options);
     }
   }, {
     key: 'toString',
@@ -134,9 +131,12 @@ var templates = require('./templates');
 
 // Search entry point
 module.exports = function (template, options) {
-  options = options || template || {};
-  template = template || options.template || templates.template;
+  if (!options) {
+    options = template || {};
+    template = options.template;
+  }
 
+  template = template || templates.template;
   return new Gpos(template, options);
 };
 
@@ -155,16 +155,20 @@ var path = require('path');
 var templates = module.exports;
 
 // Templates
-templates.template = function (_ref, query) {
+templates.template = function (_ref, query, options) {
   var items = _ref.items;
 
+  items = items || [];
   return bel(_templateObject, !items.length ? templates.noResult(query) : items.map(function (item) {
+
+    // Take care of Jekyll patterns
+    // todo: make it configurable, impl. this as default
     var name = path.basename(item.name);
     name = name.replace(/\d{4}-\d\d?-\d\d?-/, '');
     name = name.replace(/\.md/, '');
 
     var parts = item.name.split('-');
-    var href = BASE_URL + parts.slice(0, 3).join('/') + '/' + parts.slice(3).join('-');
+    var href = options.baseURL + parts.slice(0, 3).join('/') + '/' + parts.slice(3).join('-');
     href = href.replace(/\.md/, '.html');
 
     return bel(_templateObject2, href, name, item.url, item.path, href, item.name, item.path);
