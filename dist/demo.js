@@ -25,7 +25,6 @@ var readme = document.querySelector('.js-readme');
 var head = 'cd169b5a1e9fa60d2995a815c135b58a41f2180e';
 
 var getReadme = function getReadme() {
-  console.log('get readme');
   return fetch('https://cdn.rawgit.com/mklabs/gpos/' + head + '/readme.md').then(function (res) {
     return res.text();
   }).then(function (txt) {
@@ -37,6 +36,8 @@ var getReadme = function getReadme() {
 
 var search = function search(value) {
   if (!readme.children.length) getReadme();
+
+  input.focus();
   return view.search(value).then(function (el) {
     readme.removeAttribute('hidden');
     yo.update(container, el);
