@@ -1,6 +1,6 @@
 {
   "name": "gh-pages-search",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Github Pages search engine powered by Github code search API",
   "main": "index.js",
   "scripts": {
