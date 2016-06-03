@@ -22,7 +22,7 @@ search through project documentation.
 ---
 
 - *WIP*
-  - [x] option token (in url ?token=${token})
+  - [x] option token (in url `?t=${token}`)
   - [x] default template / dom el creation. using bel
   - [ ] throttle input
   - [ ] handle errors (status != 200)

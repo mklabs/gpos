@@ -22,7 +22,8 @@ let readme = document.querySelector('.js-readme');
 let head = 'f5d604f6a7788f88ce6641ae2165d85906de7c67';
 
 let getReadme = () => {
-  return fetch(`https://cdn.rawgit.com/mklabs/gpos/${head}/readme.md`)
+  // return fetch(`https://cdn.rawgit.com/mklabs/gpos/${head}/readme.md`)
+  return fetch(`https://rawgit.com/mklabs/gpos/master/readme.md`)
     .then(res => res.text())
     .then(txt => marked(txt))
     .then(md => readme.innerHTML = md)

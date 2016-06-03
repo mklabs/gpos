@@ -25,7 +25,8 @@ var readme = document.querySelector('.js-readme');
 var head = 'f5d604f6a7788f88ce6641ae2165d85906de7c67';
 
 var getReadme = function getReadme() {
-  return fetch('https://cdn.rawgit.com/mklabs/gpos/' + head + '/readme.md').then(function (res) {
+  // return fetch(`https://cdn.rawgit.com/mklabs/gpos/${head}/readme.md`)
+  return fetch('https://rawgit.com/mklabs/gpos/master/readme.md').then(function (res) {
     return res.text();
   }).then(function (txt) {
     return marked(txt);
