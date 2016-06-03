@@ -10,7 +10,7 @@ This is just a little ([3.7k](#sizes)) client side lib that talks to
 `https://api.github.com/search/code?q=` API endpoint.
 
 Written for easy inclusion on any gh-pages repo / branch. It's useful if you'd
-like to add [a search page](mkla.bz/search/?q=Make) to your Jekyll blog, or
+like to add [a search page](http://mkla.bz/search/?q=Make) to your Jekyll blog, or
 search through project documentation.
 
 - Uses `fetch()` to query Github code search
@@ -91,7 +91,7 @@ window.addEventListener('load', () => search(query));
 ### require('gpos')
 
 Will include CSS bundle and opensearch.xml template, with both [bel][] and
-[yo-yo][], bundle size is about 20k.
+[yo-yo][], bundle size is about 14kb.
 
 ```js
 var gpos = require('gpos');
@@ -106,7 +106,7 @@ gpos('Search content').then((el) => document.body.appendChild(el))
 
 Will include only `gpos` library, without CSS, opensearch template or any additional libs.
 
-Bundle size is about 4k.
+Bundle size is about 4kb.
 
 ```js
 var gpos = require('gpos/gpos');
@@ -170,6 +170,13 @@ achieved with adding it to your layouts or header includes.
 
 ### Sizes
 
+```
+$ make stat
+-rwxrwxrwx 1 root root  20K Jun  3 04:38 bundle.js
+-rwxrwxrwx 1 root root  14K Jun  3 04:38 bundle.min.js
+-rwxrwxrwx 1 root root 4.5K Jun  3 04:38 gpos.js
+-rwxrwxrwx 1 root root 3.7K Jun  3 04:38 gpos.min.js
+```
 - yo-yo - tiny (few bytes, includes bel)
 - qs - 10K
 - bel - 10K
@@ -179,14 +186,6 @@ achieved with adding it to your layouts or header includes.
 - gpos - 4k
 
 Total: 36k
-
-```
-$ make stat
--rwxrwxrwx 1 root root  20K Jun  3 04:38 bundle.js
--rwxrwxrwx 1 root root  14K Jun  3 04:38 bundle.min.js
--rwxrwxrwx 1 root root 4.5K Jun  3 04:38 gpos.js
--rwxrwxrwx 1 root root 3.7K Jun  3 04:38 gpos.min.js
-```
 
 ## Links
 
