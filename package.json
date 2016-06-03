@@ -7,7 +7,7 @@
     "test": "bake -h"
   },
   "dependencies": {
-    "bel": "^4.3.1",
+    "bel": "^4.3.1"
   },
   "devDependencies": {
     "delegate": "^3.0.1",
