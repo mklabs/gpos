@@ -22,7 +22,7 @@ var input = document.querySelector('.js-search');
 var container = document.querySelector('.js-results');
 var readme = document.querySelector('.js-readme');
 
-var head = '06cf16278dd20e10a9831d2a4b342eb0c2617d15';
+var head = '1d78a686b626de9ba8f387e2f9207bb32f97f025';
 
 var getReadme = function getReadme() {
   return fetch('https://cdn.rawgit.com/mklabs/gpos/' + head + '/readme.md').then(function (res) {
