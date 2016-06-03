@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Open search demo</title>
+  <meta name="description" content="Open search demo">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="search" href="http://mkla.bz/opensearch.xml" type="application/opensearchdescription+xml" title="Unto.net" />
+
+  <style>
+  pre, code {
+    font-size: 15px;
+    border: 1px solid #e8e8e8;
+    border-radius: 3px;
+    background-color: #eeeeff;
+  }
+
+  code { padding: 1px 5px; }
+  pre { padding: 8px 12px; overflow-x: scroll; }
+  pre > code { border: 0; padding-right: 0; padding-left: 0; }
+  </style>
+
+  <link rel="stylesheet" href="./demo.css" >
+  <link rel="stylesheet" href="./gpos.css" >
+</head>
+<body class="gpos">
+
+  <header class="site-header">
+    <a href="http://mkla.bz/">
+      /home
+    </a>
+
+    <a href="http://mkla.bz/search/">
+      /search
+    </a>
+  </header>
+
+  <main class="content" role="main">
+    <article class="post">
+      <div class="meta">
+        <h1 class="title">
+          Use
+          <a href="https://developer.github.com/v3/search/">
+            GitHub code search API
+          </a>
+          to search through
+          <a href="https://github.com/mklabs/mklabs.github.com">
+            repo content
+          </a>.
+        </h1>
+      </div>
+
+      <section class="js-results">
+        <div class="loader">
+          Loading ...
+        </div>
+      </section>
+
+      <input type="text" placeholder="Search" accesskey="s" class="search-input js-search">
+    </article>
+  </main>
+
+  <footer>
+    <p>Theme based on <a href="http://component.github.io/">component.github.io</a></p>
+  </footer>
+
+  <script src="./bundle.js"></script>
+  <script src="./demo.js"></script>
+</body>
+</html>
