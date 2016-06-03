@@ -19,7 +19,7 @@ let input = document.querySelector('.js-search');
 let container = document.querySelector('.js-results');
 let readme = document.querySelector('.js-readme');
 
-let head = '49b68c97fd9e5383df1b699c26e728ee9f6748e0';
+let head = 'f5d604f6a7788f88ce6641ae2165d85906de7c67';
 
 let getReadme = () => {
   return fetch(`https://cdn.rawgit.com/mklabs/gpos/${head}/readme.md`)
